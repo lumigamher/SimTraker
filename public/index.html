@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimTrack Pro</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #7C4DFF;     /* Violeta moderno */
+            --success-color: #00C853;      /* Verde moderno */
+            --danger-color: #FF1744;       /* Rojo moderno */
+            --background-color: #F5F5F7;   /* Gris claro moderno */
+            --card-color: #FFFFFF;         /* Blanco */
+            --text-color: #2C3E50;         /* Azul oscuro para texto */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 412px;
+            margin: 0 auto;
+            background: var(--card-color);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        #reader {
+            width: 100%;
+            margin: 20px 0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        button {
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #6B42E8;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background-color: white;
+            color: var(--danger-color);
+            border: 2px solid var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .success {
+            background-color: #E8F5E9;
+            color: var(--success-color);
+        }
+
+        .error {
+            background-color: #FFEBEE;
+            color: var(--danger-color);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+            color: var(--text-color);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .logo-text {
+            color: var(--text-color);
+            font-size: 14px;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        #scanCount {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #666;
+            padding: 8px;
+            background-color: #F8F9FA;
+            border-radius: 8px;
+        }
+
+        #newAsesorForm {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #E0E0E0;
+        }
+
+        /* Animación para los mensajes de estado */
+        @keyframes slideIn {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        #status {
+            animation: slideIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SimTrack Pro</h1>
+        <div class="logo-text">Control Inteligente de SimCards</div>
+        
+        <div id="reader"></div>
+        
+        <div class="form-group">
+            <label for="iccid">ICCID (escaneado):</label>
+            <input type="text" id="iccid" readonly>
+        </div>
+        
+        <div class="form-group">
+            <label for="asesor">Asesor a Asignar:</label>
+            <select id="asesor">
+                <option value="">Seleccionar asesor...</option>
+                <option value="Leydy Yesenia Ballesteros Tasco">Leydy Yesenia Ballesteros Tasco</option>
+                <option value="Marlene Tarazona Leal">Marlene Tarazona Leal</option>
+                <option value="Yerly Yulexi López Pinzón">Yerly Yulexi López Pinzón</option>
+                <option value="Carlos José Murillo Corzo">Carlos José Murillo Corzo</option>
+                <option value="Diego Mauricio González Garcés">Diego Mauricio González Garcés</option>
+                <option value="Jose David Bueno Sarabia">Jose David Bueno Sarabia</option>
+                <option value="Joan Sebastian Galeano Mejia">Joan Sebastian Galeano Mejia</option>
+                <option value="Juan Francisco Sequea Nieto">Juan Francisco Sequea Nieto</option>
+                <option value="Lucy Daniela Jaimes Franco">Lucy Daniela Jaimes Franco</option>
+                <option value="Katherin cordero hernandez">Katherin cordero hernandez</option>
+                <option value="Luz Stella Barajas Mendez">Luz Stella Barajas Mendez</option>
+                <option value="Oscar Esneider Rivero">Oscar Esneider Rivero</option>
+                <option value="Silvia Juliana Delgado">Silvia Juliana Delgado</option>
+                <option value="Carlos Alberto Olaya Castro">Carlos Alberto Olaya Castro</option>
+                <option value="Diana Karina Sandoval Sandova">Diana Karina Sandoval Sandova</option>
+                <option value="nuevo">+ Agregar nuevo asesor</option>
+            </select>
+        </div>
+
+        <div id="newAsesorForm" class="form-group">
+            <label for="nuevoAsesor">Nombre del nuevo asesor:</label>
+            <input type="text" id="nuevoAsesor" placeholder="Ingrese el nombre completo">
+        </div>
+        
+        <button class="btn-primary" onclick="guardarDatos()">Guardar Asignación</button>
+        <button class="btn-danger" onclick="limpiarFormulario()">Limpiar</button>
+        
+        <div id="status"></div>
+        <div class="loading" id="loading">
+            Guardando datos...
+        </div>
+        <div id="scanCount">ICCIDs escaneados hoy: 0</div>
+    </div>
+
+    <script>
+        // El resto del código JavaScript permanece igual
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyAluza-FBAez0D4iZsu8XOSMEcCqMy7ioZEqCmVfC9JuqxvKeuyrHJFMJnb6Caa8rOTA/exec';
+        
+        let html5QrcodeScanner = new Html5Qrcode("reader");
+        let config = { 
+            fps: 10, 
+            qrbox: { width: 300, height: 300 },
+            aspectRatio: 1.0
+        };
+        let scanCount = 0;
+
+        html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess);
+
+        document.getElementById('asesor').addEventListener('change', function(e) {
+            const newAsesorForm = document.getElementById('newAsesorForm');
+            if (e.target.value === 'nuevo') {
+                newAsesorForm.style.display = 'block';
+            } else {
+                newAsesorForm.style.display = 'none';
+            }
+        });
+
+        function onScanSuccess(decodedText, decodedResult) {
+            document.getElementById('iccid').value = decodedText;
+            new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgA').play();
+        }
+
+        async function guardarDatos() {
+            const iccid = document.getElementById('iccid').value;
+            let asesor = document.getElementById('asesor').value;
+            
+            if (asesor === 'nuevo') {
+                asesor = document.getElementById('nuevoAsesor').value;
+                if (!asesor) {
+                    mostrarEstado('Por favor ingresa el nombre del nuevo asesor', 'error');
+                    return;
+                }
+                const select = document.getElementById('asesor');
+                const newOption = new Option(asesor, asesor);
+                select.insertBefore(newOption, select.lastElementChild);
+            }
+            
+            if (!iccid || !asesor) {
+                mostrarEstado('Por favor escanea un ICCID y selecciona un asesor', 'error');
+                return;
+            }
+
+            const loading = document.getElementById('loading');
+            loading.style.display = 'block';
+
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        iccid,
+                        asesor
+                    })
+                });
+
+                scanCount++;
+                document.getElementById('scanCount').textContent = `ICCIDs escaneados hoy: ${scanCount}`;
+                mostrarEstado('Asignación guardada correctamente', 'success');
+                limpiarFormulario();
+            } catch (error) {
+                mostrarEstado('Error al guardar la asignación: ' + error.message, 'error');
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function mostrarEstado(mensaje, tipo) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = mensaje;
+            statusDiv.className = tipo;
+            statusDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        function limpiarFormulario() {
+            document.getElementById('iccid').value = '';
+            document.getElementById('asesor').value = '';
+            document.getElementById('nuevoAsesor').value = '';
+            document.getElementById('newAsesorForm').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
